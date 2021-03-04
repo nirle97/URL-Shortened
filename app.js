@@ -12,10 +12,6 @@
 // in the future: same with jsonbin: get for the file, read it, put for the url
 
 
-
-
-
-
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
@@ -26,8 +22,5 @@ app.use(express.json());
 app.use('/api/shorturl', shortUrl);
 app.use('/api/statistics', statistics);
 app.use(express.static("public"));
-// app.get("/", (req, res) => {
-//   res.send(`We moved to another address :)  <a href="localhost:3000/api/shorturl"/>Find Us Here</a>`)
-// });
 
 module.exports = app;
