@@ -26,7 +26,6 @@ class DataBase {
 
     static async isUrlExists(fullURL) {
         await this.getAllData();
-        console.log(fullURL);
         if (fullURL.length === 0) return false;
         fullURL = fullURL.replace(/\/$/, "");
         for (let urlObj of this.urls) {
@@ -52,7 +51,7 @@ class DataBase {
            let urlObj =
            {"fullUrl": requestFullUrl,
            "shortUrl": `${shortid.generate()}`,
-           "date": `${(new Date).toISOString().slice(0,19).replace("T"," ")}`,
+           "Created at": `${(new Date).toISOString().slice(0,19).replace("T"," ")}`,
            "clicks": 0
            }
             this.urls.push(urlObj);
