@@ -12,20 +12,7 @@ main {
   margin-top: 40px;
 }
 
-h3 {
-  margin-top: 30px;
-}
-
-
-.user-stories li {
-  margin-bottom: 1em;
-}
-
-a {
-  color: #2574a9;
-}
-
-form {
+.my-4 {
   margin: 10px auto;
   padding: 20px;
   max-width: 600px;
@@ -42,4 +29,29 @@ input {
 input[type='text'] {
   width: 220px;
   text-align: center;
+}
+
+.p-explanation {
+  font-family: Arial, sans-serif;
+  line-height: 40px;
+}
+
+table th{
+  position: relative;
+  left: 10px;
+}
+table tbody tr {
+  overflow: visible;
+}
+table tbody a {
+  position: relative;
+  text-align: left;
+  float: left;
+  color: #2574a9;
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
 }

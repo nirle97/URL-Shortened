@@ -3,16 +3,22 @@ const router = express.Router();
 const DataBase = require("../databaseClass")
 
 router.post('/', async (request, response) => {
-    const urlValidation = await DataBase.isValidUrl(request.body["fullUrl"]); //check for valid URL
-    if (!urlValidation) {
-        response.send({"Error" :"Invalid URL"});
+    const fullUrl = request.body["fullUrl"]
+
+    function isValidUrl(fullUrl) {
+        const pattern = new RegExp(/^(https?|ftp|torrent|image|irc):\/\/+([w|W]{3}\.)?(-\.)?([^\s\/?\.#]+\.?)+(\/[^\s]*)?$/);
+        return pattern.test(fullUrl);
+    }
+
+    if (!isValidUrl(fullUrl)) {
+        response.status(404).send({"Error" :"Invalid URL"});
         return;
     }
 
-    const urlExists = await DataBase.isUrlExists(request.body["fullUrl"]) //check if URL already exists
+    const urlExists = await DataBase.isUrlExists(fullUrl) //check if URL already exists
     if (urlExists !== false) {
         response.send({"Error" :"URL already exists",
-         "fullUrl": request.body["fullUrl"],
+         "fullUrl": fullUrl,
          "shortUrl": urlExists["shortUrl"]
         });
 
@@ -26,7 +32,7 @@ router.get('/:shortURL', async (req, res) => {
     inputShortUrl = req.params.shortURL;
     const fullUrl = await DataBase.getFullUrlById(inputShortUrl)
     if (fullUrl === false) {
-        res.send({"Error": `no such short URL: ${inputShortUrl}`})
+        res.status(404).send({"Error": `no such short URL: ${inputShortUrl}`})
         return;
     }
     res.redirect(fullUrl);    

@@ -21,7 +21,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use('/api/shorturl', shortUrl);
-app.use('/api/statistics', statistics);
+// app.use('/api/statistics', statistics);
 app.use(express.static("./public/shortUrl"));
+
+app.use("/api/statistics/:shortUrl" ,express.static("./public/statistics/statistics.html"));
+app.get("/api/statistics/:shortUrl", (req, res) => {
+    res.sendFile(__dirname + '/public/statistics')
+})
 
 module.exports = app;
