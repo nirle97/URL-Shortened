@@ -1,17 +1,3 @@
-// send full URL to the server
-// first, check if exist if the database json (readfile - not sync)
-// if exist: send back the short URL
-// if doesn't: create an element with the shortURL, SQLdate, clicks number, and the fullURL
-// append the elememt to the database with appenFile(?)
-// send the element back to the client with res
-// 
-// all functions in the utills file
-// all html elemnt in a different js file
-// all client fetch request in main.js file
-// 
-// in the future: same with jsonbin: get for the file, read it, put for the url
-
-
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
@@ -21,12 +7,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use('/api/shorturl', shortUrl);
-// app.use('/api/statistics', statistics);
+app.use('/api/statistics', statistics);
 app.use(express.static("./public/shortUrl"));
-
-app.use("/api/statistics/:shortUrl" ,express.static("./public/statistics/statistics.html"));
-app.get("/api/statistics/:shortUrl", (req, res) => {
-    res.sendFile(__dirname + '/public/statistics')
-})
 
 module.exports = app;

@@ -17,14 +17,14 @@ router.post('/', async (request, response) => {
 
     const urlExists = await DataBase.isUrlExists(fullUrl) //check if URL already exists
     if (urlExists !== false) {
-        response.send({"Error" :"URL already exists",
+        response.status(200).send({"Error" :"URL already exists",
          "fullUrl": fullUrl,
          "shortUrl": urlExists["shortUrl"]
         });
 
     } else {
         const newShortUrl = await DataBase.appendUrl(request.body["fullUrl"]);
-        response.send({"shortUrl": newShortUrl});
+        response.status(200).send({"shortUrl": newShortUrl});
     }
 })
 

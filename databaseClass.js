@@ -14,6 +14,14 @@ class DataBase {
             this.urls = JSON.parse(data);
     }
 
+static async getFullUrlObjectByShortUrl(shortUrl) {
+    await this.getAllData()
+    for (let urlObj of this.urls) {
+        if (urlObj["shortUrl"] === shortUrl) return urlObj
+    }
+    return {"Error": "No Such Short URL"}
+}
+
     static async isUrlExists(fullURL) {
         await this.getAllData();
         if (fullURL.length === 0) return false;
