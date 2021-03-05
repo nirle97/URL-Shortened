@@ -6,7 +6,7 @@ router.post('/', async (request, response) => {
     const fullUrl = request.body["fullUrl"]
 
     function isValidUrl(fullUrl) {
-        const pattern = new RegExp(/^(https?|ftp|torrent|image|irc):\/\/+([w|W]{3}\.)?(-\.)?([^\s\/?\.#]+\.?)+(\/[^\s]*)?$/);
+        const pattern = new RegExp(/^(https?|ftp|torrent|image|irc):\/\/+([w|W]{3}\.)+(-\.)?([^\s\/?\.#]+\.?)+(\/[^\s]*)?$/);
         return pattern.test(fullUrl);
     }
 

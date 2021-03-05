@@ -1,11 +1,13 @@
 const {readFile, writeFile} = require("fs").promises;
 const shortid = require("shortid");
+require("dotenv").config();
+const dir = process.env.NODE_ENV === 'test' ? './database.test' : './database';
 
 class DataBase {
     static urls = [];
 
     static async getAllData() {
-        const data = await readFile("./database.json", "utf8", (err, res) => {
+        const data = await readFile(`${dir}.json`, "utf8", (err, res) => {
                 if (err) {
                     throw new Error(`${err} during reading from the database in POST method`)
                 }
@@ -14,13 +16,18 @@ class DataBase {
             this.urls = JSON.parse(data);
     }
 
-static async getFullUrlObjectByShortUrl(shortUrl) {
-    await this.getAllData()
-    for (let urlObj of this.urls) {
-        if (urlObj["shortUrl"] === shortUrl) return urlObj
+    static async deleteAll() {
+        this.urls = [];
+        writeFile(`${dir}.json`, JSON.stringify([]));
     }
-    return {"Error": "No Such Short URL"}
-}
+
+    static async getFullUrlObjectByShortUrl(shortUrl) {
+        await this.getAllData()
+        for (let urlObj of this.urls) {
+            if (urlObj["shortUrl"] === shortUrl) return urlObj
+        }
+        return {"Error": "No Such Short URL"}
+    }
 
     static async isUrlExists(fullURL) {
         await this.getAllData();
@@ -53,7 +60,7 @@ static async getFullUrlObjectByShortUrl(shortUrl) {
            "clicks": 0
            }
             this.urls.push(urlObj);
-            writeFile("./database.json", JSON.stringify(this.urls, null, 2), (err) => {
+            writeFile(`${dir}.json`, JSON.stringify(this.urls, null, 2), (err) => {
             console.log(err + 'problem in writing file to database');
         })
         console.log("new url was added to the database");
@@ -66,7 +73,7 @@ static async getFullUrlObjectByShortUrl(shortUrl) {
         for (let urlObj of this.urls) {
             if (urlObj["shortUrl"] === shortUrl) {
                 urlObj["clicks"] += 1;
-                writeFile("./database.json", JSON.stringify(this.urls, null, 2));
+                writeFile(`${dir}.json`, JSON.stringify(this.urls, null, 2));
                 return urlObj["fullUrl"];
             }    
         } 
@@ -74,4 +81,7 @@ static async getFullUrlObjectByShortUrl(shortUrl) {
     }
 
 }
+
+DataBase.deleteAll()
+
 module.exports = DataBase

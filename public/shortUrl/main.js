@@ -5,14 +5,14 @@ const HOST = "http://localhost:3001"
 submitButton.addEventListener("click", fullUrlPostRequest)
 submitButton.addEventListener("click", () => fullURL.value = "")
 
-async function fullUrlPostRequest() {
+async function fullUrlPostRequest(fullUrlObj) {
     const urlToShorten = {"fullUrl": fullURL.value};
     const options = { 
         method: 'POST',
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({"fullUrl": fullURL.value}, null, 2)
+        body: JSON.stringify(urlToShorten, null, 2)
     };
     try {
         const response = await fetch(`${HOST}/api/shorturl`, options)
