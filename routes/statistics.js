@@ -4,7 +4,7 @@ const DataBase = require("../databaseClass")
 const { getDataJsonbin } = require("../backend-utils")
 router.get('/:shortUrl', async (req, res) => {
     const inputShortUrl = req.params.shortUrl;
-    DataBase.urls = await getDataJsonbin()
+    await setDataJsonbin(this.urls);
     // await DataBase.getAllData()
     for (urlObj of DataBase.urls) {
         if (urlObj["shortUrl"] === inputShortUrl) {

@@ -1,12 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const DataBase = require("../databaseClass")
+const { setDataJsonbin, getDataJsonbin } = require("../backend-utils");
 
 router.post('/', async (request, response) => {
     const fullUrl = request.body["fullUrl"]
 
-    function isValidUrl(fullUrl) {
-        const pattern = new RegExp(/^(https?|ftp|torrent|image|irc):\/\/+([w|W]{3}\.)?(-\.)?([^\s\/?\.#]+\.?)+(\/[^\s]*)?$/);
+    function isValidUrl(fullUrl) { //check if URL stands in the basic structure
+        const pattern = new RegExp(/^(https|ftp|torrent|image|irc):\/\/+([w|W]{3}\.)?(-\.)?([^\s\/?\.#]+\.?)+(\/[^\s]*)?$/);
         return pattern.test(fullUrl);
     }
     if (!isValidUrl(fullUrl)) {
@@ -36,5 +37,16 @@ router.get('/:shortURL', async (req, res) => {
     }
     res.redirect(fullUrl);    
 })
+
+router.get('/', async (req, res) => {
+    let allUrlsObjects = [];
+    allUrlsObjects = await getDataJsonbin(allUrlsObjects);
+    res.status(200).send(JSON.stringify(allUrlsObjects));
+});
+
+router.delete('/', async (req, res) => {
+    await DataBase.deleteAll();
+    res.status(200).send(JSON.stringify({"message": "all URLs were deleted successfuly"}));
+});
 
 module.exports = router;

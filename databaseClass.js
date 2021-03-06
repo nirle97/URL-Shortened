@@ -25,7 +25,7 @@ class DataBase {
 
     static async getFullUrlObjectByShortUrl(shortUrl) {
         //await this.getAllData()
-        await getDataJsonbin();
+        await getDataJsonbin(this.urls);
         for (let urlObj of this.urls) {
             if (urlObj["shortUrl"] === shortUrl) return urlObj
         }
@@ -34,10 +34,12 @@ class DataBase {
 
     static async isUrlExists(fullURL) {
         // await this.getAllData();
-        this.urls = await getDataJsonbin();
+        this.urls = await getDataJsonbin(this.urls);
         if (fullURL.length === 0) return false;
         fullURL = fullURL.replace(/\/$/, "");
+        console.log(this.urls);
         for (let urlObj of this.urls) {
+            console.log(urlObj);
             if (urlObj["fullUrl"] === fullURL) {
                 console.log('url is already exists');
                 return {"shortUrl": urlObj["shortUrl"]};
@@ -48,7 +50,7 @@ class DataBase {
 
     static async appendUrl(request) {
         // await this.getAllData();
-        this.urls = await getDataJsonbin();
+        await getDataJsonbin(this.urls);
         const requestFullUrl = request.replace(/\/$/, "");
         const isExist = await this.isUrlExists(requestFullUrl)
         if (isExist !== false){
@@ -76,7 +78,7 @@ class DataBase {
 
     static async getFullUrlById(shortUrl) {
         // await this.getAllData();
-        this.urls = await getDataJsonbin();
+        await getDataJsonbin(this.urls);
         for (let urlObj of this.urls) {
             if (urlObj["shortUrl"] === shortUrl) {
                 urlObj["clicks"] += 1;

@@ -8,18 +8,18 @@ async function fullUrlPostRequest(fullUrlObj) {
     };
     try {
         const response = await fetch(`${HOST}/api/shorturl`, options)
-        const serverResponse = await response.json();
+        const responseJson = await response.json();
 
-        if (Object.keys(serverResponse).includes("Error")) {
-            const error = serverResponse["Error"];
+        if (Object.keys(responseJson).includes("Error")) {
+            const error = responseJson["Error"];
             alert(error);
 
             if (error === "URL already exists") {
-                if (isUrlExistsInTable(serverResponse["fullUrl"])) return;
-                addNewUrlToTable(serverResponse["fullUrl"] ,serverResponse["shortUrl"]);
+                if (isUrlExistsInTable(responseJson["fullUrl"])) return;
+                addNewUrlToTable(responseJson["fullUrl"] ,responseJson["shortUrl"]);
             }
         } else {
-            addNewUrlToTable(fullUrlObj["fullUrl"] ,serverResponse["shortUrl"]);
+            addNewUrlToTable(fullUrlObj["fullUrl"] ,responseJson["shortUrl"]);
         }
 
     } catch(e) {
@@ -30,7 +30,6 @@ async function fullUrlPostRequest(fullUrlObj) {
 
 
 function addNewUrlToTable(fullUrl, shortUrl) {
-    const tableBody = document.querySelector(".table-body-row");
     const tr = document.createElement("tr");
     tableBody.append(tr);
     [fullUrl, shortUrl].forEach((url, index) => {
@@ -43,6 +42,12 @@ function addNewUrlToTable(fullUrl, shortUrl) {
     })
 }
 
+function cleanUrlTable() {
+    for (let tr of tableBody.querySelectorAll("tr")) {
+        tableBody.removeChild(tr);
+    }
+}
+
 function isUrlExistsInTable(fullUrl) {
     allTableTd = document.querySelectorAll("td");
     for (td of allTableTd) {
@@ -50,3 +55,44 @@ function isUrlExistsInTable(fullUrl) {
     }
     return false;
 }
+
+async function retriviedData() {
+    let options = { 
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    };
+    try {
+        const response = await fetch(`${HOST}/api/shorturl`, options);
+        if (!response.ok) throw new Error ("couldn't get data from Jsonbin");
+        const responseJson = await response.json();
+        for (urlObj of responseJson) {
+            addNewUrlToTable(urlObj["fullUrl"], urlObj["shortUrl"])
+        }  
+    } catch(e) {
+        console.log(`${e}. could not get data from jsonbin`);
+    }
+}
+
+async function deleteAll() {
+    const options = { 
+        method: 'DELETE',
+        headers: {
+            "Content-Type": "application/json"
+        },
+    };
+    try {
+        const response = await fetch(`${HOST}/api/shorturl`, options)
+        const serverResponse = await response.json();
+        if (response.status !== 200) {
+            alert("Couldn't delete URLs")
+            throw new Error("Problem in deleting URLs from database")
+        } else {
+            alert("All URLs were deleted successfuly")
+        }
+
+    } catch(e) {
+        console.error(`${e}. There is a problem with the ${options.method} request`);
+    };
+};

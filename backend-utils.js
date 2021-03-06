@@ -1,7 +1,6 @@
 const fetch = require('node-fetch');
-const DataBase = require("./databaseClass");
 
-const getDataJsonbin = async function getDataJsonbin() {
+const getDataJsonbin = async function getDataJsonbin(urlsArray) {
     let options = { 
         method: "GET",
         headers: {
@@ -13,8 +12,8 @@ const getDataJsonbin = async function getDataJsonbin() {
         const response = await fetch('https://api.jsonbin.io/v3/b/6043435c5e29de07fcec591a' + '/latest', options);
         if (!response.ok) throw new Error ("couldn't get data from Jsonbin");
         const responseJson = await response.json();
-        DataBase.urls = responseJson["record"];
-        return DataBase.urls;
+        urlsArray = responseJson["record"]["URLs"];
+        return urlsArray;
     } catch(e) {
         console.log(`${e}. could not get data from jsonbin`);
     }
@@ -27,7 +26,7 @@ const setDataJsonbin = async function setDataJsonbin(allUrlsObjects) {
             "Content-Type": "application/json",
             "X-Master-Key": "$2b$10$G3u8we1g.QbRfXsTOlEDiOFzRlmSXqbljvIljPRyQEe0uvwz8qX1K",
         },
-        body: JSON.stringify(allUrlsObjects)
+        body: JSON.stringify({"URLs": allUrlsObjects})
     };
     try {
         const response = await fetch('https://api.jsonbin.io/v3/b/6043435c5e29de07fcec591a', options)
