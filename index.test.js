@@ -1,7 +1,7 @@
 const request = require("supertest");
-const puppeteer = require("puppeteer");
 const app = require("./app");
 const DataBase = require("./databaseClass");
+const { getDataJsonbin } = require("./backend-utils");
 require("dotenv").config();
 afterAll(() => {DataBase.deleteAll()})
 const FULLURL = 'https://www.google.com/'
@@ -20,7 +20,7 @@ describe("Post Request To /api/shorturl", () => {
     expect(response.status).toBe(200);
     // Are the URLs equal
     expect(responseJson["shortUrl"]).toBe(expectedShortUrl["shortUrl"]);
-  });
+  }, 40000);
 
   test("if an existed URL returns the proper message", async () => {
     const response = await request(app)
@@ -34,22 +34,24 @@ describe("Post Request To /api/shorturl", () => {
     expect(response.status).toBe(200);
     // Are the error messages equal
     expect(responseJson["Error"]).toBe(expectedErrorMessage);
-  });
+  }, 40000);
 
   test("if an invalid URL returns the proper message", async () => {
-    const inVlaidFullUrl = FULLURL.slice(0, 12)
+    const inVlaidFullUrl = "http://ww.google.com"
+    console.log("inVlaidFullUrl ", inVlaidFullUrl);
     const response = await request(app)
     .post('/api/shorturl')
     .send({"fullUrl": inVlaidFullUrl});
 
     const responseJson = await JSON.parse(response.text);
+    console.log("responseJson ", responseJson);
     const expectedErrorMessage = "Invalid URL";
 
     // Is the status code 404
     expect(response.status).toBe(404);
     // Are the error messages equal
     expect(responseJson["Error"]).toBe(expectedErrorMessage);
-  });
+  }, 40000);
 });
 
 
@@ -66,7 +68,7 @@ describe("Post Request To /api/statistics", () => {
     expect(response.status).toBe(200);
     // Are URL Objects equal
     expect(responseJson).toEqual(urlObj);
-  });
+  }, 40000);
 
   test("If the statistics page returns error in case short URL doesn't exist", async () => {
     const shortUrl = 'InValidURL';
@@ -77,27 +79,17 @@ describe("Post Request To /api/statistics", () => {
     expect(response.status).toBe(404);
     // Are the error messages equal
     expect(responseJson["Error"]).toEqual(`no such short URL: ${shortUrl}`);
-  });
+  }, 40000);
 });
 
-describe("puppeteer test for client side", () => {
-  const URL = 'http://localhost:3001';
+describe("Delete request to /api/shorturl", () => {
+  it("should delete all urls from the database", async () => {
+    const response = await request(app).delete(`/api/shorturl/`);
+    const serverMessage = JSON.parse(response.text);
+    const allUrlsObjects = await getDataJsonbin();
+    expect(response.status).toBe(200);
+    expect(allUrlsObjects.length).toBe(0);
+    expect(serverMessage["message"]).toBe("all URLs were deleted successfuly");
 
-  it.only("input field should be empty after the 'Shorten' button is clicked", async () => {
-    await request(app).get('/');
-    browser = await puppeteer.launch({
-      headless: false,
-      slowMo: 30
-    });
-    page = await browser.newPage();
-    await page.goto(URL, { waitUntil: 'networkidle2' });
-    const inputFiled = await page.$$("#url-input");
-    console.log(inputFiled);
-    await inputFiled.type(FULLURL);
-    const shortenButton = await page.$("#submit-button");
-    await shortenButton.click();
-    expect(inputFiled.innerText).toBe("")
-    await browser.close();
-  },40000)
-
+  }, 80000)
 })

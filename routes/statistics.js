@@ -1,18 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const DataBase = require("../databaseClass")
-const { getDataJsonbin } = require("../backend-utils")
 router.get('/:shortUrl', async (req, res) => {
     const inputShortUrl = req.params.shortUrl;
-    await setDataJsonbin(this.urls);
-    // await DataBase.getAllData()
-    for (urlObj of DataBase.urls) {
-        if (urlObj["shortUrl"] === inputShortUrl) {
-            res.status(200).send(JSON.stringify(urlObj, null, 2))
-            return;
-        }
+    const urlObj = await DataBase.getFullUrlObjectByShortUrl(inputShortUrl)
+    if (urlObj["Error"]) {
+        res.status(404).send({"Error": `no such short URL: ${inputShortUrl}`});
+        return;
     }
-    res.status(404).send({"Error": `no such short URL: ${inputShortUrl}`})
+    res.status(200).send(JSON.stringify(urlObj, null, 2))
+    return;
 })
 
 module.exports = router;

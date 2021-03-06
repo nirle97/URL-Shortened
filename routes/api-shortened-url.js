@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const DataBase = require("../databaseClass")
-const { setDataJsonbin, getDataJsonbin } = require("../backend-utils");
+const { getDataJsonbin } = require("../backend-utils");
 
 router.post('/', async (request, response) => {
     const fullUrl = request.body["fullUrl"]

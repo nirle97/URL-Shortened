@@ -25,9 +25,9 @@ class DataBase {
 
     static async getFullUrlObjectByShortUrl(shortUrl) {
         //await this.getAllData()
-        await getDataJsonbin(this.urls);
+        this.urls = await getDataJsonbin(this.urls);
         for (let urlObj of this.urls) {
-            if (urlObj["shortUrl"] === shortUrl) return urlObj
+            if (urlObj["shortUrl"] === shortUrl) return urlObj;
         }
         return {"Error": "No Such Short URL"}
     }
@@ -37,9 +37,7 @@ class DataBase {
         this.urls = await getDataJsonbin(this.urls);
         if (fullURL.length === 0) return false;
         fullURL = fullURL.replace(/\/$/, "");
-        console.log(this.urls);
         for (let urlObj of this.urls) {
-            console.log(urlObj);
             if (urlObj["fullUrl"] === fullURL) {
                 console.log('url is already exists');
                 return {"shortUrl": urlObj["shortUrl"]};
