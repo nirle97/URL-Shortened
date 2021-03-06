@@ -16,9 +16,7 @@ describe("Post Request To /api/shorturl", () => {
     const responseJson = JSON.parse(response.text);
     const expectedShortUrl = await DataBase.isUrlExists(FULLURL);
 
-    // Is the status code 200
     expect(response.status).toBe(200);
-    // Are the URLs equal
     expect(responseJson["shortUrl"]).toBe(expectedShortUrl["shortUrl"]);
   }, 40000);
 
@@ -30,9 +28,7 @@ describe("Post Request To /api/shorturl", () => {
     const responseJson = await JSON.parse(response.text);
     const expectedErrorMessage = "URL already exists";
 
-    // Is the status code 200
     expect(response.status).toBe(200);
-    // Are the error messages equal
     expect(responseJson["Error"]).toBe(expectedErrorMessage);
   }, 40000);
 
@@ -47,9 +43,7 @@ describe("Post Request To /api/shorturl", () => {
     console.log("responseJson ", responseJson);
     const expectedErrorMessage = "Invalid URL";
 
-    // Is the status code 404
     expect(response.status).toBe(404);
-    // Are the error messages equal
     expect(responseJson["Error"]).toBe(expectedErrorMessage);
   }, 40000);
 });
@@ -64,9 +58,7 @@ describe("Post Request To /api/statistics", () => {
     const response = await request(app).get(`/api/statistics/${shortUrl}`);
     const responseJson = JSON.parse(response.text);
 
-    // Is the status code 200
     expect(response.status).toBe(200);
-    // Are URL Objects equal
     expect(responseJson).toEqual(urlObj);
   }, 40000);
 
@@ -75,9 +67,7 @@ describe("Post Request To /api/statistics", () => {
     const response = await request(app).get(`/api/statistics/${shortUrl}`);
     const responseJson = JSON.parse(response.text);
 
-    // Is the status code 404
     expect(response.status).toBe(404);
-    // Are the error messages equal
     expect(responseJson["Error"]).toEqual(`no such short URL: ${shortUrl}`);
   }, 40000);
 });
